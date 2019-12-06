@@ -3,6 +3,10 @@ const express = require("express");
 const socketIO = require("socket.io");
 const path = require("path");
 
+var five = require('johnny-five');
+var board = new five.Board();
+var led;
+
 // Configuration
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
@@ -15,16 +19,32 @@ const server = express()
 // Initiatlize SocketIO
 const io = socketIO(server);
 
+board.on('ready', function(){
+	led = new five.Led(13);
+});
+      
 // Register "connection" events to the WebSocket
 io.on("connection", function(socket) {
+  
+  socket.on('toggleLed', function(d){
+		led.toggle();
+	});
+
   // Register "join" events, requested by a connected client
   socket.on("join", function (room) {
+
     // join channel provided by client
     socket.join(room)
     // Register "image" events, sent by the client
     socket.on("image", function(msg) {
       // Broadcast the "image" event to all other clients in the room
       socket.broadcast.to(room).emit("image", msg);
+
     });
   })
 });
+
+function myFunction()
+{
+
+}

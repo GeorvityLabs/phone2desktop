@@ -13,8 +13,14 @@
 
     <!-- Client Code -->
     <script type="text/javascript">
+
+      // Classifier Variable
+		let serial;
+		let portName = '/dev/ttyACM0';
+	
       // Get WebSocket
       var socket = io();
+	//var socket = io(https://phone2desktop-test.herokuapp.com/);
       // Get DOM elements
       var input = document.getElementById("input");
       var output = document.getElementById("output");
@@ -23,6 +29,8 @@
       socket.emit("join", room);
       // Listen to file input events
       document.getElementById("input").addEventListener("change", function (event) {
+				
+
         // Prepeare file reader
         var file = event.target.files[0];
         var fileReader = new FileReader();
@@ -31,6 +39,7 @@
           var image = event.target.result
           output.src = image;
           socket.emit("image", image);
+					
         };
         // Read file
         fileReader.readAsDataURL(file);
@@ -38,6 +47,17 @@
       socket.on("image", function (image) {
         output.src = image;
       });
+			
+		function myFunction()
+		{
+			socket.emit('toggleLed');
+			//document.getElementById("btn").innerHTML = "Hello World";
+		}
+		
     </script>
+	<button id="btn" onclick="myFunction()">Hello</button>
+	
+	
   </body>
+	
 </html>
